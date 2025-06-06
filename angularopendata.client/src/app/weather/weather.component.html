@@ -1,0 +1,26 @@
+<!--<h3>臺北市 36 小時天氣預報(weather.component)</h3>-->
+<h3>臺灣 36 小時天氣預報</h3>
+<mat-form-field appearance="fill">
+  <mat-label>選擇城市</mat-label>
+  <mat-select [formControl]="selectedCity">
+    <mat-option *ngFor="let city of cities" [value]="city">
+      {{ city }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<ul *ngIf="forecastList.length > 0; else noData">
+  <li *ngFor="let f of forecastList">
+    <strong>{{ f.startTime }} ~ {{ f.endTime }}</strong><br />
+    狀況：{{ f.parameter.parameterName }}
+    <mat-divider></mat-divider>
+  </li>
+</ul>
+
+<!-- 當沒有資料時顯示這段 -->
+<ng-template #noData>
+  <p>無資料或資料載入中...(weather.component=>#noData)</p>
+</ng-template>
+
+<!-- 新增判斷無資料或載入中 -->
+<p *ngIf="!forecastList || forecastList.length === 0">無資料或資料載入中...(weather.component=>ngIf)</p>
