@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WeatherService } from './weather.service';
+import {
+  WeatherCityCode,
+  WeatherCityOption,
+  WeatherCityOptions,
+  WeatherCityMap
+} from '../constants/cityconstants';
 
 @Component({
   selector: 'app-weather',
@@ -8,41 +14,59 @@ import { WeatherService } from './weather.service';
 })
 
 export class WeatherComponent implements OnInit {
-  forecastList: any[] = [];
-  cities = ['臺北市', '新北市', '桃園市', '臺中市', '高雄市'];
-  selectedCity = new FormControl('臺北市');
 
+  forecastList: any[] = [];
+  // Reactive Form 控制項：綁定下拉選單，預設值為「臺北市」
+  selectedCity = new FormControl<WeatherCityCode>('Taipei');
+  // 城市下拉清單資料
+  CitiesForHtml = WeatherCityOptions;//for weather.component.html
+  // 建構式：注入 WeatherService 供後續呼叫 API 使用
   constructor(private weatherService: WeatherService) { }
 
+  //OnInit 初始化邏輯
   ngOnInit(): void {
-    this.selectedCity.valueChanges.subscribe(city => {
-      if (city) {
-        this.fetchWeather(city);
+    // 當使用者改變城市選擇時，valueChanges 會發出事件，立即呼叫 fetchWeather()
+    this.selectedCity.valueChanges.subscribe(cityCode => {
+      if (cityCode) {
+        this.fetchWeather(cityCode);// 傳入使用者選擇的城市查詢天氣
       }
     });
-
-    const city = this.selectedCity.value;
-    if (city) {
-      this.fetchWeather(city); // 預設載入臺北市
+    // 第一次進入頁面時預設載入臺北市天氣
+    const cityCode = this.selectedCity.value;
+    if (cityCode) {
+      this.fetchWeather(cityCode); // 預設載入臺北市
     }
   }
 
-  fetchWeather(cityName: string): void {
-    this.weatherService.getWeatherByCity(cityName).subscribe({
-      next: (data: any) => {
-        const location = data.records?.location?.[0];
-        if (location && location.weatherElement) {
-          const wxElement = location.weatherElement.find((el: any) => el.elementName === 'Wx');
-          this.forecastList = wxElement?.time || [];
-        } else {
-          this.forecastList = [];
-        }
-      },
-      error: (err) => {
-        console.error('API 錯誤:', err);
+  fetchWeather(cityCode: WeatherCityCode): void {
+    const cityName = WeatherCityMap[cityCode]; // 取得中文名稱
+    const callback = (data: any) => {
+      const location = data.records?.location?.[0];
+      if (location && location.weatherElement) {
+        const wxElement = location.weatherElement.find((el: any) => el.elementName === 'Wx');
+        this.forecastList = wxElement?.time || [];
+      } else {
         this.forecastList = [];
       }
-    });
+    };
+
+    if (cityCode === 'Taipei') {
+      this.weatherService.getTaipeiWeather().subscribe({
+        next: callback,
+        error: (err) => {
+          console.error('API 錯誤:', err);
+          this.forecastList = [];
+        }
+      });
+    } else {
+      this.weatherService.getWeatherByCity(cityName).subscribe({
+        next: callback,
+        error: (err) => {
+          console.error('API 錯誤:', err);
+          this.forecastList = [];
+        }
+      });
+    }
   }
 }
 

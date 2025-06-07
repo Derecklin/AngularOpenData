@@ -13,9 +13,9 @@ namespace AngularOpenData.Server.Controllers
         {
             _weatherService = weatherService;
         }
-        [HttpGet]
-#if false
+
         #region Limit Taipai
+        [HttpGet("taipei")]
         public async Task<IActionResult> Get()
         {
             try
@@ -29,8 +29,9 @@ namespace AngularOpenData.Server.Controllers
             }
         }
         #endregion
-#else
+
         #region no limit search
+        [HttpGet]
         public async Task<IActionResult> Get([FromQuery] string locationName = "»O¥_¥«")
         {
             try
@@ -44,6 +45,5 @@ namespace AngularOpenData.Server.Controllers
             }
         }
         #endregion
-#endif
     }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-/*import { HttpClient } from '@angular/common/http';//限定台北市*/
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
@@ -9,10 +8,12 @@ export class WeatherService {
   constructor(private http: HttpClient) { }
 
   /*HttpClient 送出 GET 請求，回傳 Observable < any > 給 Component 訂閱（subscribe）*/
-  //  return this.http.get<any>(this.apiUrl); 
-  //getTaipeiWeather() {
   getWeatherByCity(city: string) {
     const params = new HttpParams().set('locationName', city);
     return this.http.get<any>(this.apiUrl, { params });
+  }
+
+  getTaipeiWeather() {
+    return this.http.get<any>(`${this.apiUrl}/taipei`);
   }
 }
