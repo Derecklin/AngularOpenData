@@ -1,0 +1,36 @@
+.card-container {
+  display: grid;
+  /*grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));*/
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.weather-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+
+/*.mat-mdc-card {
+  background-color: #f0f8ff !important;*/ /* 加上 !important 保險覆蓋原本樣式 */
+/*}*/
+
+.weather-sunny-bg {
+  background-color: #fff9c4; /* 淡黃色 */
+}
+
+.weather-cloudy-bg {
+  background-color: #e0f7fa; /* 淺藍色 */
+}
+
+.weather-rainy-bg {
+  background-color: #d7ccc8; /* 淡灰色 */
+}
+
+.weather-default-bg {
+  background-color: #f0f8ff; /* 預設背景色 */
+}
+
+.weather-card:hover {
+  transform: scale(1.03);
+}

@@ -1,0 +1,42 @@
+<h3>臺灣 36 小時天氣預報</h3>
+
+<mat-form-field appearance="fill">
+  <mat-label>選擇城市</mat-label>
+  <mat-select [formControl]="selectedCity">
+    <mat-option *ngFor="let city of CitiesForHtml" [value]="city.value">
+      {{ city.name }} / {{ city.value }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!--<ul *ngIf="forecastList.length > 0; else noData">
+  <li *ngFor="let f of forecastList; let isEven = even" [ngStyle]="{ color: isEven ? 'blue' : 'green' }">
+    <strong>{{ f.startTime }} ~ {{ f.endTime }}</strong><br />
+    狀況：{{ f.parameter.parameterName }}
+    <mat-divider></mat-divider>
+  </li>
+</ul>-->
+
+<div *ngIf="forecastList.length > 0; else noData">
+  <div class="card-container">
+    <mat-card *ngFor="let f of forecastList; let isEven = even"
+              [ngClass]="getCardBackgroundClass(f.parameter.parameterName)"
+              [ngStyle]="{ borderLeft: '10px solid ' + (isEven ? 'blue' : 'green') }"
+              class="weather-card">
+      <mat-card-header>
+        <mat-card-title>{{ f.startTime }} ~ {{ f.endTime }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>狀況：{{ f.parameter.parameterName }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<!-- 當沒有資料時顯示這段 -->
+<ng-template #noData>
+  <p>無資料或資料載入中...(weather.component=>#noData)</p>
+</ng-template>
+
+<!-- 新增判斷無資料或載入中 -->
+<p *ngIf="!forecastList || forecastList.length === 0">無資料或資料載入中...(weather.component=>ngIf)</p>
